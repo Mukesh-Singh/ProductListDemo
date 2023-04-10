@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">ProductListDemo</string>
+    <string name="price">Price: ₹%s</string>
+    <string name="favorite">Favorite</string>
+    <string name="something_went_wrong_try_again">Something went wrong, try Again!</string>
+    <string name="details">Details</string>
+    <string name="no_favorite_product">No favorite product</string>
+</resources>
