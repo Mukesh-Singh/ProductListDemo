@@ -5,6 +5,8 @@ import com.mukesh.products.demo.data.models.Product
 import com.mukesh.products.demo.data.repository.datasource.local.LocalDataSource
 import com.mukesh.products.demo.data.repository.datasource.remote.RemoteDataSource
 import com.mukesh.products.demo.data.util.NetworkResult
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 /**
 Created by Mukesh
@@ -13,9 +15,9 @@ Created by Mukesh
 class ProductRepositoryImpl(
     private val localDataSource: LocalDataSource,
     private val remoteDataSource: RemoteDataSource): ProductRepository {
-    override suspend fun getProductsList(): NetworkResult<List<Product>> {
+    override suspend fun getProductsList(): NetworkResult<List<Product>>  = withContext(Dispatchers.IO) {
         val response = remoteDataSource.getProducts()
-        return try {
+        try {
             if (response.isSuccessful){
                 response.body()?.let {
                     NetworkResult.Success(it)
@@ -30,9 +32,9 @@ class ProductRepositoryImpl(
 
     }
 
-    override suspend fun getProductDetails(productId: Int): NetworkResult<Product?> {
+    override suspend fun getProductDetails(productId: Int): NetworkResult<Product?> = withContext(Dispatchers.IO) {
         val response = remoteDataSource.getProductDetails(productId)
-        return try {
+        try {
             if (response.isSuccessful){
                 NetworkResult.Success(response.body())
             }else{
@@ -43,35 +45,35 @@ class ProductRepositoryImpl(
         }
     }
 
-    override suspend fun getFavoriteProductsList(): NetworkResult<List<Product>> {
+    override suspend fun getFavoriteProductsList(): NetworkResult<List<Product>> = withContext(Dispatchers.IO){
         val response = remoteDataSource.getProducts()
         try {
             if (!response.isSuccessful || response.body().isNullOrEmpty()){
-                return NetworkResult.Success(emptyList())
+                NetworkResult.Success(emptyList())
             }else{
                 val favIds = localDataSource.getFavoriteProductsIdList().map { it.productId }
                 if (favIds.isEmpty()){
-                    return NetworkResult.Success(emptyList())
+                    NetworkResult.Success(emptyList<Product>())
                 }
                 val listOfFavProduct = response.body()?.filter { favIds.contains(it.id?.toString()) }
-                return NetworkResult.Success(listOfFavProduct)
+                NetworkResult.Success(listOfFavProduct)
 
             }
 
         }catch (e: Exception){
-            return NetworkResult.Error(e.message,null)
+            NetworkResult.Error(e.message,null)
         }
     }
 
-    override suspend fun addToFavorite(id: Int) {
+    override suspend fun addToFavorite(id: Int) = withContext(Dispatchers.IO) {
         localDataSource.addToFavorite(id)
     }
 
-    override suspend fun removeFromFavorite(id: Int) {
+    override suspend fun removeFromFavorite(id: Int) = withContext(Dispatchers.IO){
         localDataSource.removeFromFavorite(id)
     }
 
-    override suspend fun isFavorite(id: Int): Boolean {
-        return localDataSource.isFavorite(id)
+    override suspend fun isFavorite(id: Int): Boolean = withContext(Dispatchers.IO){
+        localDataSource.isFavorite(id)
     }
 }

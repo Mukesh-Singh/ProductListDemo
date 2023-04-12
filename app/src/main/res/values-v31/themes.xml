@@ -2,5 +2,6 @@
 <resources>
     <style name="Theme.ProductListDemo" parent="android:Theme.Material.Light.NoActionBar">
         <item name="android:windowSplashScreenBackground">@color/status_bar_color</item>
+        <item name="android:windowBackground">@color/status_bar_color</item>
     </style>
 </resources>

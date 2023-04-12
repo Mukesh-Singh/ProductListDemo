@@ -50,7 +50,7 @@ class ProductDetailsViewModel @Inject constructor(
     }
 
     private fun isFavorite() {
-        CoroutineScope(Dispatchers.IO).launch {
+        viewModelScope.launch {
             productId?.let {
                 val  fav = productRepository.isFavorite(it.toInt())
                 withContext(Dispatchers.Main) {
@@ -63,7 +63,7 @@ class ProductDetailsViewModel @Inject constructor(
 
 
     private fun addToMyFavorite(){
-        CoroutineScope(Dispatchers.IO).launch {
+        viewModelScope.launch {
             productId?.let {
                 productRepository.addToFavorite(it.toInt())
             }
@@ -71,7 +71,7 @@ class ProductDetailsViewModel @Inject constructor(
     }
 
     private fun removeFromFavorite(){
-        CoroutineScope(Dispatchers.IO).launch {
+        viewModelScope.launch {
             productId?.let {
                 productRepository.removeFromFavorite(it.toInt())
             }
